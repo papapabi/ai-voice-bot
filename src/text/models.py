@@ -13,3 +13,7 @@ class GenerateTextIn(BaseModel):
 class GenerateTextOut(BaseModel):
     session_id: Annotated[UUID4, Strict(False)]
     message: str
+
+
+class DeleteHistoryIn(BaseModel):
+    session_id: Annotated[UUID4, Strict(False)]

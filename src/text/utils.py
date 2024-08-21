@@ -50,6 +50,12 @@ def generate_text_response(message: str, session_id: uuid4) -> str:
         return "An error occurred while processing your request."
 
 
+def delete_history(session_id: uuid4) -> None:
+    history = PostgreSQLMessageHistory(session_id=session_id)
+    history.delete()
+    return
+
+
 if __name__ == "__main__":
     # message = "Hello, who is this?"
     # print(f"{message=}")

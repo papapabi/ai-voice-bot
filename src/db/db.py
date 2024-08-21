@@ -69,6 +69,13 @@ class PostgreSQLMessageHistory:
                 # Step 4: Link the message to the session in the sess_msg_link table
                 cur.execute(INSERT_SESS_MSG_LINK, (sess_id, message_id))
 
+    def delete(self):
+        with psycopg.connect(conninfo=self.connection_string) as conn:
+            with conn.cursor() as cur:
+                cur.execute(DELETE_SESS_MSG_LINK, (self.session_id,))
+                cur.execute(DELETE_MSG)
+                cur.execute(DELETE_SESS, (self.session_id,))
+
 
 if __name__ == "__main__":
     history = PostgreSQLMessageHistory("44d10f9f-b36e-458a-a3d2-58adbf054dce")
