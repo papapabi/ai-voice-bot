@@ -162,7 +162,5 @@ cython_debug/
 .idea/
 
 # Postgres
-.env-postgres/
+.env-postgres
 postgres-data/
-db/
-
