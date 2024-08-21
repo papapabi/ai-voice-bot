@@ -35,12 +35,13 @@ class PostgresSettings(BaseSettings):
         env_file=".env-postgres", env_file_encoding="utf-8"
     )
 
+    postgres_dsn: PostgresDsn = None
     postgres_dbname: str
     postgres_host: str
     postgres_user: str
     postgres_password: str
     postgres_host: str
-    postgres_dsn: PostgresDsn = None
+    postgres_port: str
 
 
 @lru_cache()
