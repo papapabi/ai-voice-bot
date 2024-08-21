@@ -3,47 +3,46 @@ from logging.config import dictConfig
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
+import colorlog
+
 # log to project root
 project_root = Path(__file__).parent.parent.resolve()
 logs_dir = project_root / "logs"
 logs_dir.mkdir(exist_ok=True, parents=True)
 logs_target = logs_dir / "python.log"
 
-
 logging_schema = {
-    # Always 1. Schema versioning may be added in a future release of logging
     "version": 1,
-    # "Name of formatter" : {Formatter Config Dict}
     "formatters": {
-        # Formatter Name
         "standard": {
-            # class is always "logging.Formatter"
             "class": "logging.Formatter",
-            # Optional: logging output format
-            "format": "%(asctime)s\t%(levelname)s\t%(filename)s\t%(message)s",
-            # Optional: asctime format
+            "format": "%(asctime)s | %(levelname)-8s | %(filename)-20s | %(message)s",
             "datefmt": "%d %b %y %H:%M:%S",
-        }
+        },
+        "colored": {
+            "class": "colorlog.ColoredFormatter",
+            "format": "%(asctime)s | %(log_color)s%(levelname)-8s%(reset)s | %(filename)-20s | %(message)s",
+            "datefmt": "%d %b %y %H:%M:%S",
+            "log_colors": {
+                "DEBUG": "cyan",
+                "INFO": "green",
+                "WARNING": "yellow",
+                "ERROR": "red",
+                "CRITICAL": "bold_red",
+            },
+        },
     },
-    # Handlers use the formatter names declared above
     "handlers": {
-        # Name of handler
         "console": {
-            # The class of logger. A mixture of logging.config.dictConfig() and
-            # logger class-specific keyword arguments (kwargs) are passed in here.
             "class": "logging.StreamHandler",
-            # This is the formatter name declared above
-            "formatter": "standard",
-            "level": "INFO",
-            # The default is stderr
+            "formatter": "colored",
+            "level": "DEBUG",
             "stream": "ext://sys.stdout",
         },
-        # Same as the StreamHandler example above, but with different
-        # handler-specific kwargs.
         "file": {
             "class": "logging.handlers.RotatingFileHandler",
             "formatter": "standard",
-            "level": "INFO",
+            "level": "DEBUG",
             "filename": str(logs_target),
             "mode": "a",
             "encoding": "utf-8",
@@ -51,22 +50,22 @@ logging_schema = {
             "backupCount": 5,
         },
     },
-    # Loggers use the handler names declared above
     "loggers": {
-        "__main__": {  # if __name__ == "__main__"
-            # Use a list even if one handler is used
+        "__main__": {
             "handlers": ["console", "file"],
-            "level": "INFO",
+            "level": "DEBUG",
             "propagate": False,
         }
     },
-    # Just a standalone kwarg for the root logger
-    "root": {"level": "INFO", "handlers": ["file"]},
+    "root": {"level": "DEBUG", "handlers": ["console", "file"]},
 }
 
 dictConfig(logging_schema)
 logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
-    logging.info("testing an info log entry")
-    logging.warning("testing a warning log entry")
+    logger.debug("This is another test")
+    logger.info("testing an info log entry")
+    logger.warning("testing a warning log entry")
+    logger.error("testing an error log entry")
+    logger.critical("THINGS WILL EXPLODE IN A FEW SECONDS")
