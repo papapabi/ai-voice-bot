@@ -2,6 +2,12 @@
 include .env
 export
 
+SERVICE_NAME := ai-voice-bot
+DEV_SERVICE_NAME := ${SERVICE_NAME}-dev
+IMAGE_NAME := ${DEV_SERVICE_NAME}
+VERSION := 0.1.0
+TAG := ${IMAGE_NAME}:${VERSION}
+
 default: help
 
 .PHONY: help
@@ -16,3 +22,8 @@ start: # Start a local development server
 format: # Sort imports and format the entire project dir using ruff
 	ruff check --select I --fix .
 	ruff format .
+
+.PHONY: build
+build:
+	docker build -t ${TAG} .
+	#docker buildx build --platform linux/amd64 -t ${TAG} .
