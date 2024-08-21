@@ -28,7 +28,7 @@ def generate_text_response(message: str, session_id: uuid4) -> str:
         history.add_message(role_name="system", message_content=SYSTEM_PROMPT)
         history.add_message(role_name="user", message_content=message)
     else:
-        messages = history.get_n_messages(n=10)
+        messages = history.get_n_messages(limit=10)
         messages = [msg.to_dict() for msg in messages]
         history.add_message(role_name="user", message_content=message)
 
@@ -50,29 +50,46 @@ def generate_text_response(message: str, session_id: uuid4) -> str:
         return "An error occurred while processing your request."
 
 
-def delete_history(session_id: uuid4) -> None:
-    history = PostgreSQLMessageHistory(session_id=session_id)
-    history.delete_session()
-    return
-
-
 if __name__ == "__main__":
-    message = "Hello, who is this?"
-    print(f"{message=}")
-    logger.info(f"{message=}")
+    # message = "Hello, who is this?"
+    # print(f"{message=}")
+    # logger.info(f"{message=}")
+    # client = OpenAI(
+    #     api_key=get_settings().openai_dev_service_account,
+    #     project=get_settings().openai_project_id,
+    # )
+
+    # completion = client.chat.completions.create(
+    #     model=get_settings().openai_model_name,
+    #     messages=[
+    #         {"role": "system", "content": SYSTEM_PROMPT},
+    #         {"role": "user", "content": message},
+    #     ],
+    # )
+
+    # ai_response = completion.choices[0].message.content
+    # print(f"{ai_response=}")
+    # logger.info(f"{ai_response=}")
+
     client = OpenAI(
         api_key=get_settings().openai_dev_service_account,
         project=get_settings().openai_project_id,
     )
 
+    history = PostgreSQLMessageHistory("44d10f9f-b36e-458a-a3d2-58adbf054dce")
+    logger.debug(f"{history.session_exists()=}")
+    if history.session_exists():
+        messages = history.get_n_messages(limit=10)
+        messages = [msg.to_dict() for msg in messages]
+        logger.debug(f"{messages=}")
+
+    model_name = get_settings().openai_model_name
+    logger.debug(f"{model_name=}")
+
     completion = client.chat.completions.create(
-        model=get_settings().openai_model_name,
-        messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": message},
-        ],
+        model=model_name,
+        messages=messages,
     )
 
     ai_response = completion.choices[0].message.content
-    print(f"{ai_response=}")
-    logger.info(f"{ai_response=}")
+    logger.debug(f"{ai_response=}")

@@ -37,9 +37,11 @@ class PostgreSQLMessageHistory:
         with psycopg.connect(conninfo=self.connection_string) as conn:
             with conn.cursor(row_factory=class_row(Message)) as cur:
                 messages = cur.execute(
-                    GET_ALL_MESSAGES_BY_SESSION_ID, (self.session_id,)
+                    GET_N_MOST_RECENT_MESSAGES_BY_SESSION_ID, (self.session_id, limit)
                 ).fetchall()
-        return messages[:limit]
+        # reverse messages to get them in chronological order
+        # this is needed for OpenAI to properly understand context
+        return messages[::-1]
 
     def add_message(self, role_name: str, message_content: str):
         with psycopg.connect(conninfo=self.connection_string) as conn:
@@ -69,11 +71,17 @@ class PostgreSQLMessageHistory:
 
 
 if __name__ == "__main__":
-    history = PostgreSQLMessageHistory("ee904482-316c-4d1f-b0da-7699ff02f652")
-    logger.info(history.session_exists())
+    history = PostgreSQLMessageHistory("44d10f9f-b36e-458a-a3d2-58adbf054dce")
+    logger.debug(history.session_exists())
     history.add_message(role_name="system", message_content=SYSTEM_PROMPT)
     history.add_message(
         role_name="user",
         message_content="hello i'd like to inquire regarding your services",
     )
     messages = history.get_all_messages()
+    logger.debug(f"Message models: {messages}")
+    logger.debug(f"to_dict(): {[msg.to_dict() for msg in messages]}")
+
+    messages = history.get_n_messages(10)
+    logger.debug(f"Message models: {messages}")
+    logger.debug(f"to_dict(): {[msg.to_dict() for msg in messages]}")

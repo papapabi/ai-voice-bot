@@ -13,6 +13,19 @@ JOIN msg_roles ON msg.role_id = msg_roles.role_id
 WHERE sess.session_id = %s;
 """
 
+GET_N_MOST_RECENT_MESSAGES_BY_SESSION_ID = """
+SELECT 
+    msg.message_content AS content,
+    msg_roles.role_name AS role
+FROM sess
+JOIN sess_msg_link ON sess.sess_id = sess_msg_link.sess_id
+JOIN msg ON sess_msg_link.message_id = msg.message_id
+JOIN msg_roles ON msg.role_id = msg_roles.role_id
+WHERE sess.session_id = %s
+ORDER BY msg.created_at DESC
+LIMIT %s;
+"""
+
 INSERT_SESS = """
 INSERT INTO sess (session_id)
 VALUES (%s)

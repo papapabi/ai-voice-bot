@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, status
 
 from src.auth.dependencies import check_api_key
-from src.text.models import DeleteHistoryIn, GenerateTextIn, GenerateTextOut
-from src.text.utils import delete_history, generate_text_response
+from src.text.models import GenerateTextIn, GenerateTextOut
+from src.text.utils import generate_text_response
 
 router = APIRouter(
     prefix="/v1/text",
