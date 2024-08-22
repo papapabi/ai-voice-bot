@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 
 from src.auth.dependencies import check_api_key
-from src.text.models import GenerateTextIn, GenerateTextOut
-from src.text.utils import generate_text_response
+from src.text.models import DeleteHistoryIn, GenerateTextIn, GenerateTextOut
+from src.text.utils import delete_history, generate_text_response
 
 router = APIRouter(
     prefix="/v1/text",
@@ -15,6 +15,7 @@ router = APIRouter(
     "/generate",
     summary="Generate a text response using gpt-4o-mini",
     response_model=GenerateTextOut,
+    status_code=status.HTTP_201_CREATED,
 )
 def generate_response(*, request: GenerateTextIn):
     """
@@ -23,6 +24,18 @@ def generate_response(*, request: GenerateTextIn):
     - **message** - The current message to generate a response to.
     """
     ai_message = generate_text_response(
+        session_id=request.session_id,
         message=request.message,
     )
     return {"message": ai_message, "session_id": request.session_id}
+
+
+# router.py
+@router.delete(
+    "/history",
+    summary="Delete chat history by session id",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def del_history(*, request: DeleteHistoryIn):
+    delete_history(request.session_id)
+    return
