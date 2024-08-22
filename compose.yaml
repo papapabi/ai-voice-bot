@@ -1,0 +1,30 @@
+services:
+  backend:
+    image: ai-voice-bot-dev:0.1.0
+    ports: 
+    - 80:80
+    env_file:
+    - ".env"
+    - ".env-postgres-compose"
+    networks:
+      - front-tier
+      - back-tier
+  
+  postgres:
+    image: postgres:16-alpine
+    restart: always
+    ports:
+      - 5432:5432
+    env_file:
+      - ".env-postgres"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    networks:
+      - back-tier
+  
+networks:
+  front-tier: {}
+  back-tier: {}
+
+volumes:
+  postgres-data: {}
