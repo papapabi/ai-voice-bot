@@ -39,7 +39,7 @@ def create_collection(collection_name: str):
         )
 
 
-def search(q: str, collection_name: str, limit=3) -> list[dict[str, str]]:
+def search(q: str, limit=3) -> list[dict[str, str]]:
     """
     Perform a vector similarity search over the specified collection.
 
@@ -86,10 +86,8 @@ def search(q: str, collection_name: str, limit=3) -> list[dict[str, str]]:
 
 
 if __name__ == "__main__":
-    collection_name = get_vector_database_settings().collection_name
     # create_collection(collection_name)
     response = search(
         "Good morning! Just want to ask, how can I pay my billease bill?",
-        collection_name,
     )
     print(response)
