@@ -44,10 +44,27 @@ class PostgresSettings(BaseSettings):
     postgres_port: str
 
 
+class QdrantSettings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env-qdrant", env_file_encoding="utf-8")
+
+    qdrant_host: str
+    qdrant_rest_api_port: str
+    qdrant_grpc_api_port: str
+    openai_embedder_name: str
+    openai_embedder_size: int
+    collection_name: str
+
+
 @lru_cache()
 def get_settings():
     return Settings()
 
 
+@lru_cache()
 def get_database_settings():
     return PostgresSettings()
+
+
+@lru_cache()
+def get_vector_database_settings():
+    return QdrantSettings()
