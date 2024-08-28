@@ -1,11 +1,12 @@
 services:
   backend:
-    image: ai-voice-bot-dev:0.1.0
+    image: ai-voice-bot-dev:0.2.0
     ports: 
     - 80:80
     env_file:
     - ".env"
     - ".env-postgres-compose"
+    - ".env-qdrant-compose"
     networks:
       - front-tier
       - back-tier
