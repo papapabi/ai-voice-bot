@@ -131,7 +131,7 @@ env.bak/
 venv.bak/
 
 # all environment vars
-*.env*
+.env*
 
 # Spyder project settings
 .spyderproject
