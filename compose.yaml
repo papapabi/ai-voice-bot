@@ -1,6 +1,6 @@
 services:
   backend:
-    image: ai-voice-bot-dev:0.2.0
+    image: ai-voice-bot-dev:0.2.1
     ports: 
     - 80:80
     env_file:

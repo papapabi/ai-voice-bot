@@ -2,9 +2,9 @@ FROM python:3.11-slim
 
 WORKDIR /ai-voice-bot
 
-COPY ./requirements.dev ./requirements.dev
+COPY ./requirements/prod.txt ./requirements.prod
 
-RUN pip install --no-cache-dir -r ./requirements.dev
+RUN pip install --no-cache-dir -r ./requirements.prod
 
 COPY ./src ./src
 

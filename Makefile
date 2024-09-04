@@ -5,7 +5,7 @@ export
 SERVICE_NAME := ai-voice-bot
 DEV_SERVICE_NAME := ${SERVICE_NAME}-dev
 IMAGE_NAME := ${DEV_SERVICE_NAME}
-VERSION := 0.2.0
+VERSION := 0.2.1
 TAG := ${IMAGE_NAME}:${VERSION}
 
 default: help
